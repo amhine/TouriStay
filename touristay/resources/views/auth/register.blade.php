@@ -38,6 +38,15 @@
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
+        <!-- Sélection du rôle -->
+        <div class="mt-4">
+            <label for="role_id" class="block text-gray-700 text-sm font-semibold mb-2">Type d'utilisateur</label>
+            <select id="role_id" name="role_id" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300">
+                <option value="0">Choisissez votre rôle</option>
+                <option value="2">Touriste</option>
+                <option value="3">Proprietaire</option>
+            </select>
+        </div>
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
@@ -48,5 +57,6 @@
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+        
     </form>
 </x-guest-layout>
