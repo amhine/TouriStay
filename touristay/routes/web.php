@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TouristeDashboardController;
+use App\Http\Controllers\ProprietaireDashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+Route::get('/dashboard/touriste', [TouristeDashboardController::class, 'index'])->middleware('role')->name('dashboard.touriste');
+Route::get('/dashboard/proprietaire', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('dashboard.proprietaire');
+
+}
+);
 
 require __DIR__.'/auth.php';
