@@ -33,7 +33,14 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard/touriste', [TouristeDashboardController::class, 'index'])->middleware('role')->name('dashboard.touriste');
 Route::get('/dashboard/proprietaire', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('dashboard.proprietaire');
 
+
+Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
+Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
+
+    
+Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
 }
 );
+
 
 require __DIR__.'/auth.php';

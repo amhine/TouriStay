@@ -25,7 +25,7 @@
         
         <!-- Formulaire -->
         <div class="p-6">
-            <form method="post" action="{{ route('password.update') }}" class="space-y-6">
+            <form method="post" action="{{ route('password.updatee') }}" class="space-y-6">
                 @csrf
                 @method('put')
                 
