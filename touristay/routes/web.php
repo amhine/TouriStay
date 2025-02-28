@@ -38,11 +38,14 @@ Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
 Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
 
 
-Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
-
+// Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
+// Change to:
+Route::get('/annonce', [AnnonceController::class, 'search'])->name('annonce');
+// Route::get('/annonce', [annoncecontroller::class, 'search']);
     
 Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
 }
+
 );
 
 
