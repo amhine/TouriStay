@@ -41,9 +41,21 @@ Route::get('/dashboard', function () {
 
     Route::get('/annonce/touriste', [AnnonceController::class, 'search'])->name('annonce');
     
+    Route::get('/annonce/ajouter', [AnnonceController::class, 'afficherform'])->name('annonce.forme');
+    
+    Route::post('/annonce/ajouter', [AnnonceController::class, 'store'])->name('annonce.update');
+    
     Route::get('/annonce/proprietaire', [AnnonceController::class, 'index'])->name('annonce.proprietaire');
     
     Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
+
+    Route::get('/annonces/{id}/edit', [AnnonceController::class, 'edit'])->name('annonce.edit');
+
+    Route::delete('/annonces/{id}', [AnnonceController::class, 'destroy'])->name('annonces.destroy');
+
+
+
+
     }
 
 );

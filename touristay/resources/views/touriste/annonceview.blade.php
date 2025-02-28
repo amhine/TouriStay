@@ -74,52 +74,94 @@
         </form>
 
         <div class="container mx-auto px-4 py-8">
-            <!-- Grille d'annonces -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @if($annonces->count() > 0)
-                    @foreach($annonces as $annonce)
-                    <!-- Carte d'annonce -->
-                    <div class="card bg-white rounded-xl overflow-hidden shadow-lg">
-                        <div class="relative">
-                            <img src="{{ $annonce->image }}" alt="Appartement avec vue" class="w-full card-image">
+           <!-- Grille d'annonces -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @if($annonces->count() > 0)
+                @foreach($annonces as $annonce)
+                <!-- Carte d'annonce -->
+                <div class="card bg-white rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative">
+                        <img src="{{ old('image', $annonce->image) }}" alt="Appartement avec vue" class="w-full card-image">
+                        <div class="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            {{ old('prixparnuit', $annonce->prixparnuit) }} DH/nuit
                         </div>
-                        <div class="p-5">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $annonce->titre }}</h3>
-                            <div class="flex items-center text-gray-600 mb-2">
-                                <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
-                                <span>{{ $annonce->adress }}, {{ $annonce->ville }}</span>
-                            </div>
-                            
-                            <div class="border-t pt-4">
-                                <div class="flex justify-around">
-                                    <!-- Affichage des équipements -->
-                                    @foreach($annonce->equipement as $equip)
-                                    <div class="amenity-icon text-center">
-                                        <i class="fas fa-{{ $equip->icon }} text-purple-600 text-xl mb-1"></i>
-                                        <p class="text-xs">{{ $equip->nom }}</p>
-                                    </div>
-                                    @endforeach
+                        <div class="absolute bottom-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                            {{ old('disponibilite', $annonce->disponibilite) }}
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ old('titre', $annonce->titre) }}</h3>
+                        <div class="flex items-center text-gray-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
+                            <span>{{ old('adress', $annonce->adress) }}, {{ old('ville', $annonce->ville) }}</span>
+                        </div>
+                        <!-- Description -->
+                        <p class="text-gray-600 mb-4 line-clamp-3">
+                            {{ old('description', $annonce->description) }}
+                        </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="flex items-center mr-4">
+                                    <i class="fas fa-bed mr-1 text-purple-600"></i>
+                                    <span>{{ old('nbrchambre', $annonce->nbrchambre) }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-bath mr-1 text-purple-600"></i>
+                                    <span>{{ old('nbrsallesebain', $annonce->nbrsallesebain) }}</span>
                                 </div>
                             </div>
-        
-                            <!-- Ajouter un bouton de réservation, si nécessaire -->
-                            <button class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
-                                Reserver
-                            </button>
                         </div>
+                        <!-- Équipements -->
+                        <div class="border-t pt-4">
+                            <div class="flex justify-around">
+                                @foreach($annonce->equipement as $equip)
+                                <div class="amenity-icon text-center">
+                                    <i class="fas fa-{{ $equip->icon }} text-purple-600 text-xl mb-1"></i>
+                                    <p class="text-xs">{{ $equip->nom }}</p>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <!-- Bouton Réserver -->
+                        <button class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                            Réserver
+                        </button>
                     </div>
-                    @endforeach
-                @else
-                    <div class="col-span-3 text-center py-10">
-                        <p class="text-gray-500 text-xl">Aucune annonce trouvée pour ces critères.</p>
-                    </div>
-                @endif
-            </div>
+                </div> 
+                @endforeach
+            @else
+                <div class="col-span-3 text-center py-10">
+                    <p class="text-gray-500 text-xl">Aucune annonce disponible.</p>
+                </div>
+            @endif
+        </div>
         </div>
         
         <!-- Pagination -->
-        <div class="mt-10 flex justify-center">
+        {{-- <div class="mt-10 flex justify-center">
             {{ $annonces->links() }}
+        </div> --}}
+
+        <div class="flex justify-center space-x-2">
+            @if ($annonces->onFirstPage())
+                <span class="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg">Précédent</span>
+            @else
+                <a href="{{ $annonces->previousPageUrl() }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Précédent</a>
+            @endif
+
+            @foreach ($annonces->getUrlRange(1, $annonces->lastPage()) as $page => $url)
+                @if ($page == $annonces->currentPage())
+                    <span class="px-4 py-2 bg-purple-700 text-white font-bold rounded-lg">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            @if ($annonces->hasMorePages())
+                <a href="{{ $annonces->nextPageUrl() }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Suivant</a>
+            @else
+                <span class="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg">Suivant</span>
+            @endif
         </div>
     </div>
 </body>

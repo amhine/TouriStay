@@ -11,15 +11,18 @@ class annonce extends Model
     protected $table = 'annonce';
 
     protected $fillable = [
-        'titre',
-        'description',
-        'prixparnuit',
-         'nbrchambre',
-         'nbrsallesebain',
-         'adress',
-         'ville',
-         'image',
-         'disponibilite',
+        'titre', 
+        'description', 
+        'prixparnuit', 
+        'nbrchambre', 
+        'nbrsallesebain', 
+        'adress', 
+        'ville', 
+        'image', 
+        'disponibilite', 
+        'created_at', 
+        'updated_at',
+        'id_proprietaire' 
     ];
 
     public function equipement()
