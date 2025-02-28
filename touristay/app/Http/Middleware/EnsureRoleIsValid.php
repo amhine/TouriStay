@@ -18,11 +18,10 @@ class EnsureRoleIsValid
     {
         if (Auth::check()) {
             $user = Auth::user();
-
-            if ($user->role_id == 2) {
-                return redirect()->route('dashboard.touriste');
-            } elseif ($user->role_id == 3) {
-                return redirect()->route('dashboard.proprietaire');
+            
+ 
+            if ($user->role_id == 1) {
+                return redirect()->route('dashboard');
             }
         }
 

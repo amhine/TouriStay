@@ -24,6 +24,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center ">
     <!-- Navbar pour TouriStay -->
+    @if(auth()->user()->role_id == 2)
     <nav class="bg-white shadow-md w-full">
         <div class="container mx-auto px-4 py-2">
             <div class="flex justify-between items-center">
@@ -31,8 +32,8 @@
                     <span class="text-2xl font-bold text-green-600">TouriStay</span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="/dashboard/proprietaire" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
-                    <a href="/annonce" class="text-gray-700 hover:text-green-600 transition">Annonces</a>
+                    <a href="/touriste/dashboard" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
+                    <a href="/annonce/touriste" class="text-gray-700 hover:text-green-600 transition">Annonces</a>
                     <a href="/profile" class="text-gray-700 hover:text-green-600 transition">Profil</a>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">
@@ -51,6 +52,7 @@
             </div>
         </div>
     </nav>
+@endif
 
     <!-- Carte de profil -->
     <div class="gradient-bg max-w-4xl w-full rounded-2xl shadow-2xl overflow-hidden p-8 space-y-8 text-white mt-8">

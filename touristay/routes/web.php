@@ -25,26 +25,26 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+    Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-Route::get('/dashboard/touriste', [TouristeDashboardController::class, 'index'])->middleware('role')->name('dashboard.touriste');
-Route::get('/dashboard/proprietaire', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('dashboard.proprietaire');
-
-
-Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
-Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
+    Route::get('/touriste/dashboard', [TouristeDashboardController::class, 'index'])->middleware('role')->name('touriste.dashboard');
+    Route::get('/proprietaire/dashboard', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('proprietaire.dashboard');
 
 
-// Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
-// Change to:
-Route::get('/annonce', [AnnonceController::class, 'search'])->name('annonce');
-// Route::get('/annonce', [annoncecontroller::class, 'search']);
+    Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
+    Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
+
+
+    // Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
+
+    Route::get('/annonce/touriste', [AnnonceController::class, 'search'])->name('annonce');
     
-Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
-}
+    Route::get('/annonce/proprietaire', [AnnonceController::class, 'index'])->name('annonce.proprietaire');
+    
+    Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
+    }
 
 );
 

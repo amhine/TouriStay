@@ -8,7 +8,7 @@ class ProprietaireDashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard.proprietaire');
+        return view('proprietaire.dashboard');
     }
 }
 

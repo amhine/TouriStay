@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Annonce;
 use Illuminate\Http\Request;
 use App\Models\equipement;
+use Illuminate\Support\Facades\Auth;
 
 class AnnonceController extends Controller
 {
@@ -25,6 +26,17 @@ class AnnonceController extends Controller
     
         $equipement = equipement::all();
         
-        return view('annonceview', compact('annonces', 'equipement'));
+        return view('touriste.annonceview', compact('annonces', 'equipement'));
     }
+   
+
+
+    public function index()
+    {
+        $userId = Auth::id(); 
+        $annonces = Annonce::where('id_proprietaire', $userId)->with('equipement')->get();
+    
+        return view('proprietaire.annonceview', compact('annonces'));
+    }
+    
 }
