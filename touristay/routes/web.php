@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TouristeDashboardController;
 use App\Http\Controllers\ProprietaireDashboardController;
-
+use App\Http\Controllers\annoncecontroller;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +36,9 @@ Route::get('/dashboard/proprietaire', [ProprietaireDashboardController::class, '
 
 Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
 Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
+
+
+Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
 
     
 Route::put('/profile/password', [ProfileController::class, 'updatee'])->name('password.updatee');
