@@ -105,6 +105,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700">Équipements</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        @foreach($equipement as $equip)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="equipement[]" value="{{ $equip->id }}" class="form-checkbox text-blue-500">
+                                <span class="ml-2">{{ $equip->nom }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                
 
                 <!-- Champs supplémentaires (non visibles) -->
                 <div class="hidden">

@@ -3,30 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Annonces Immobilières - TouriStay</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mes Favoris | TouriStay</title>
+    
+    <!-- Font Awesome & TailwindCSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Styles personnalisés -->
     <style>
-        .card-image {
-            height: 200px;
-            object-fit: cover;
-        }
-        .amenity-icon {
-            transition: all 0.3s ease;
-        }
-        .amenity-icon:hover {
-            transform: translateY(-3px);
-        }
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .favorite-btn:hover i {
+            color: #e3342f; /* Rouge plus vif au survol */
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100">
+
     <!-- Navigation -->
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-2">
@@ -57,27 +49,42 @@
         </div>
     </nav>
 
-    <div class="container mx-auto px-4 py-8">
-        <!-- Barre de Recherche -->
-        <form action="{{ route('annonce') }}" method="GET" class="mb-8 bg-white rounded-lg shadow-md p-4">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-              
-                <div class="flex flex-wrap gap-2">
-                    <input type="text" name="ville" value="{{ request('ville') }}" placeholder="Rechercher par ville" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 w-60">
-                    <input type="date" name="disponibilite" value="{{ request('disponibilite') }}" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
-                <div>
-                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition duration-300 flex items-center">
-                        <i class="fas fa-search mr-2"></i> Rechercher
-                    </button>
-                </div>
-            </div>
-        </form>
+   
 
-        <div class="container mx-auto px-4 py-8">
-           <!-- Grille d'annonces -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @if($annonces->count() > 0)
+    <div class="container mx-auto px-4 py-8">
+        @if($annonces->isEmpty())
+            <p class="text-center text-gray-600 text-lg">Vous n'avez ajouté aucune annonce en favori.</p>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {{-- @foreach ($annonces as $annonce)
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                        <img src="{{ ( $annonce->image) }}" class="w-full h-48 object-cover" alt="Image de {{ $annonce->titre }}">
+
+                        <div class="p-4">
+                            <h5 class="text-xl font-semibold text-gray-800">{{ $annonce->titre }}</h5>
+                            <p class="text-gray-600 mt-2">{{ Str::limit($annonce->description, 80) }}</p>
+                            <p class="text-green-600 font-bold mt-2">Prix: {{ $annonce->prixparnuit }}€/nuit</p>
+
+                            <!-- Boutons -->
+                            <div class="flex justify-between items-center mt-4">
+                                <form action="{{ route('favoris.toggle', $annonce->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="favorite-btn text-red-500 hover:text-red-600 transition">
+                                        <i class="fas fa-heart-broken text-2xl"></i>
+                                    </button>
+                                </form>
+
+                                <div class="text-center mt-6">
+                                    <a href="{{ route('annonce') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                        Retour aux annonces
+                                    </a>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                @endforeach --}}
+
                 @foreach($annonces as $annonce)
                 <!-- Carte d'annonce -->
                 <div class="card bg-white rounded-xl overflow-hidden shadow-lg">
@@ -89,12 +96,7 @@
                         <div class="absolute bottom-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                             {{ old('disponibilite', $annonce->disponibilite) }}
                         </div>
-                        <form action="{{ route('favoris.toggle', $annonce->id) }}" method="POST" class="absolute top-4 left-4">
-                            @csrf
-                            <button type="submit" class="favorite-btn text-white bg-gray-800 bg-opacity-60 p-2 rounded-full hover:bg-red-500 transition">
-                                <i class="fas fa-heart {{ $annonce->isFavorited() ? 'text-red-500' : 'text-white' }}"></i>
-                            </button>
-                        </form>
+                       
                     </div>
                     
                     <div class="p-5">
@@ -131,46 +133,33 @@
                             </div>
                         </div>
                         <!-- Bouton Réserver -->
-                        <button class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
-                            Réserver
-                        </button>
+                        <!-- Boutons -->
+                        <div class="flex justify-between items-center mt-4">
+                            <form action="{{ route('favoris.toggle', $annonce->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="favorite-btn text-red-500 hover:text-red-600 transition">
+                                    <i class="fas fa-heart-broken text-2xl"></i>
+                                </button>
+                            </form>
+
+                            <div class="text-center mt-6">
+                                <a href="{{ route('annonce') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                                    Retour aux annonces
+                                </a>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div> 
                 @endforeach
-            @else
-                <div class="col-span-3 text-center py-10">
-                    <p class="text-gray-500 text-xl">Aucune annonce disponible.</p>
-                </div>
-            @endif
-        </div>
-        </div>
-        
-        <!-- Pagination -->
-        {{-- <div class="mt-10 flex justify-center">
-            {{ $annonces->links() }}
-        </div> --}}
+            </div>
 
-        <div class="flex justify-center space-x-2">
-            @if ($annonces->onFirstPage())
-                <span class="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg">Précédent</span>
-            @else
-                <a href="{{ $annonces->previousPageUrl() }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Précédent</a>
-            @endif
-
-            @foreach ($annonces->getUrlRange(1, $annonces->lastPage()) as $page => $url)
-                @if ($page == $annonces->currentPage())
-                    <span class="px-4 py-2 bg-purple-700 text-white font-bold rounded-lg">{{ $page }}</span>
-                @else
-                    <a href="{{ $url }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">{{ $page }}</a>
-                @endif
-            @endforeach
-
-            @if ($annonces->hasMorePages())
-                <a href="{{ $annonces->nextPageUrl() }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Suivant</a>
-            @else
-                <span class="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg">Suivant</span>
-            @endif
-        </div>
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+                {{ $annonces->links() }}
+            </div>
+        @endif
     </div>
+
 </body>
 </html>

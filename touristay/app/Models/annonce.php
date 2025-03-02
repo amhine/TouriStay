@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class annonce extends Model
+class Annonce extends Model
 {
     use HasFactory;
     protected $table = 'annonce';
@@ -29,4 +29,17 @@ class annonce extends Model
     {
         return $this->belongsToMany(equipement::class, 'annonce_equipe');
     }
+
+    public function favoris()
+    {
+        return $this->belongsToMany(User::class, 'favories', 'id_annonce', 'id_touriste')->withTimestamps();
+    }
+    public function isFavorited()
+    {
+        if (auth()->check()) {
+            return $this->favoris()->where('id_touriste', auth()->id())->exists();
+        }
+        return false;
+    }
+
 }

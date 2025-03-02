@@ -20,6 +20,7 @@
                 <div class="hidden md:flex space-x-8">
                     <a href="/touriste/dashboard" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
                     <a href="/annonce/touriste" class="text-gray-700 hover:text-green-600 transition">Annonces</a>
+                    <a href="/favoris" class="text-gray-700 hover:text-green-600 transition">Favoris</a>
                     <a href="/profile" class="text-gray-700 hover:text-green-600 transition">Profil</a>
                 </div>
                 <div class="hidden md:flex items-center space-x-4">

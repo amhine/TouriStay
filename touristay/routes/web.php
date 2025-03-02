@@ -29,14 +29,17 @@ Route::get('/dashboard', function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/touriste/dashboard', [TouristeDashboardController::class, 'index'])->middleware('role')->name('touriste.dashboard');
-    Route::get('/proprietaire/dashboard', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('proprietaire.dashboard');
+    Route::get('/dashboard/touriste', [TouristeDashboardController::class, 'index'])->middleware('role')->name('touriste.dashboard');
+    Route::get('/dashboard/proprietaire', [ProprietaireDashboardController::class, 'index'])->middleware('role')->name('proprietaire.dashboard');
 
 
     Route::get('/editprf', [ProfileController::class, 'formedit'])->name('profile');
     Route::get('/changepassword', [ProfileController::class, 'formepasswrd'])->name('prassword');
+    
 
+    Route::post('/favoris/toggle/{id}', [AnnonceController::class, 'toggleFavorite'])->name('favoris.toggle')->middleware('auth'); 
 
+    Route::get('/favoris', [AnnonceController::class, 'favoris'])->name('favoris.index')->middleware('auth');
     // Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
 
     Route::get('/annonce/touriste', [AnnonceController::class, 'search'])->name('annonce');
@@ -52,6 +55,8 @@ Route::get('/dashboard', function () {
     Route::get('/annonces/{id}/edit', [AnnonceController::class, 'edit'])->name('annonce.edit');
 
     Route::delete('/annonces/{id}', [AnnonceController::class, 'destroy'])->name('annonces.destroy');
+    Route::put('/annonce/{id}', [AnnonceController::class, 'update'])->name('annonce.update');
+
 
 
 

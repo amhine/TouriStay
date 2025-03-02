@@ -51,4 +51,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(role::class, 'role_id');
     }
+    public function favoris()
+    {
+        return $this->belongsToMany(Annonce::class, 'favories', 'id_touriste', 'id_annonce')->withTimestamps();
+    }
+    
+    
+
 }

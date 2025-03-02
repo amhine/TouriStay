@@ -23,8 +23,10 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center ">
-    <!-- Navbar pour TouriStay -->
-    @if(auth()->user()->role_id == 2)
+   <!-- Navbar pour TouriStay -->
+@if(auth()->check())
+@if(auth()->user()->role_id == 2)
+    <!-- Navbar pour Touriste -->
     <nav class="bg-white shadow-md w-full">
         <div class="container mx-auto px-4 py-2">
             <div class="flex justify-between items-center">
@@ -44,14 +46,32 @@
                         </button>
                     </form>
                 </div>
-                <div class="md:hidden">
-                    <button class="text-gray-700 focus:outline-none">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+            </div>
+        </div>
+    </nav>
+@else
+    <!-- Navbar pour Propriétaire -->
+    <nav class="bg-white shadow-md w-full">
+        <div class="container mx-auto px-4 py-2">
+            <div class="flex justify-between items-center">
+                <span class="text-2xl font-bold text-green-600">TouriStay</span>
+                <div class="hidden md:flex space-x-8">
+                    <a href="/proprietaire/dashboard" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
+                    <a href="/annonce/proprietaire" class="text-gray-700 hover:text-green-600 transition">Annonces</a>
+                    <a href="/profile" class="text-gray-700 hover:text-green-600 transition">Profil</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <form action="/logout" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 transition">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </nav>
+@endif
 @endif
 
     <!-- Carte de profil -->
