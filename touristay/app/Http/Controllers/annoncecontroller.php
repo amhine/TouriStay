@@ -171,21 +171,6 @@ class AnnonceController extends Controller
 
 
 
-// public function toggleFavorite(Request $request, $id)
-//     {
-//         $annonce = Annonce::findOrFail($id);
-//         $user = Auth::user();
-//         if ($user->favoris()->where('id_annonce', $id)->exists()) {
-//             $user->favoris()->detach($id);
-//             $message = 'Annonce retirée des favoris.';
-//         } else {
-//             $user->favoris()->attach($id);
-//             $message = 'Annonce ajoutée aux favoris.';
-//         }
-
-//         return redirect()->route('annonce')->with('success', $message);
-
-//     }
 
 public function toggleFavorite(Request $request, $id)
 {
@@ -205,13 +190,13 @@ public function toggleFavorite(Request $request, $id)
 
     public function favoris()
     {
-        $user = Auth::user(); // Récupère l'utilisateur connecté
+        $user = Auth::user(); 
     
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour voir vos favoris.');
         }
     
-        $annonces = $user->favoris()->paginate(9); // Récupère ses annonces favorites avec pagination
+        $annonces = $user->favoris()->paginate(9); 
     
         return view('touriste.favoris', compact('annonces'));
     }

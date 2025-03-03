@@ -55,7 +55,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Annonce::class, 'favories', 'id_touriste', 'id_annonce')->withTimestamps();
     }
-    
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
     
 
 }

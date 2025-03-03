@@ -27,7 +27,7 @@
                     <span class="text-2xl font-bold text-green-600">TouriStay</span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="/touriste/dashboard" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
+                    <a href="/dashboard/touriste" class="text-gray-700 hover:text-green-600 transition">Accueil</a>
                     <a href="/annonce/touriste" class="text-gray-700 hover:text-green-600 transition">Annonces</a>
                     <a href="/favoris" class="text-gray-700 hover:text-green-600 transition">Favoris</a>
                     <a href="/profile" class="text-gray-700 hover:text-green-600 transition">Profil</a>

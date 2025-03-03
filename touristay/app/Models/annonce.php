@@ -41,5 +41,9 @@ class Annonce extends Model
         }
         return false;
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 
 }
