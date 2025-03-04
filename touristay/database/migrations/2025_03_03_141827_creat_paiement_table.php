@@ -9,16 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    
     public function up(): void
     {
-        Schema::create('paiement',function (Blueprint $table) {
+        Schema::create('paiement', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('reservation_id')->constrained('reservation')->onDelete('cascade');
             $table->date('datepaiement');
+            $table->timestamps();
         });
-
-        
     }
-
     /**
      * Reverse the migrations.
      */

@@ -21,5 +21,9 @@ class Reservation extends Model
     {
         return $this->belongsTo(Annonce::class);
     }
+    public function payment()
+    {
+        return $this->hasOne(paiement::class);
+    }
 }
 

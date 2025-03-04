@@ -9,18 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+  
     public function up(): void
-    {
-        Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('touriste_id')->constrained('touriste')->onDelete('cascade'); 
-            $table->foreignId('annonce_id')->constrained('annonce')->onDelete('cascade');
-            $table->date('datedebut');
-            $table->date('datefin');
-            $table->string('status');
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('reservation', function (Blueprint $table) {
+        $table->id();
+        $table->date('datedebut');
+        $table->date('datefin');
+        $table->string('status');
+        $table->foreignId('annonce_id')->constrained('annonce')->onDelete('cascade');
+        $table->timestamps();
+    });
+}
     
 
     /**
