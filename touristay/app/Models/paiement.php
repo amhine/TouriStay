@@ -10,7 +10,9 @@ class paiement extends Model
     use HasFactory;
     protected $table = 'paimente';
     protected $fillable = [
-        'datePaiement '
+        'reservation_id',
+        'datePaiement ',
+        'id_touriste'
     ];
     public function reservation()
     {
