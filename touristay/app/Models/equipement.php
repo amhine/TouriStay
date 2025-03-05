@@ -11,8 +11,8 @@ class equipement extends Model
     protected $table = 'equipement';
 
     protected $fillable = [
-        'image',
         'nom', 
+        'icon'
     ];
     public function annonces()
     {

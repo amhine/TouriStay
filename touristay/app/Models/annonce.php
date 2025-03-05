@@ -25,11 +25,14 @@ class Annonce extends Model
         'id_proprietaire' 
     ];
 
+    // public function equipement()
+    // {
+    //     return $this->belongsToMany(equipement::class, 'annonce_equipe');
+    // }
     public function equipement()
     {
-        return $this->belongsToMany(equipement::class, 'annonce_equipe');
+        return $this->belongsToMany(Equipement::class, 'annonce_equipe', 'annonce_id', 'equipe_id');
     }
-
     public function favoris()
     {
         return $this->belongsToMany(User::class, 'favories', 'id_annonce', 'id_touriste')->withTimestamps();

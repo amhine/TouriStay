@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TouristeDashboardController;
 use App\Http\Controllers\ProprietaireDashboardController;
 use App\Http\Controllers\annoncecontroller;
-
+use App\Http\Controllers\ReservationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,7 +41,6 @@ Route::get('/dashboard', function () {
     Route::post('/favoris/toggle/{id}', [AnnonceController::class, 'toggleFavorite'])->name('favoris.toggle')->middleware('auth'); 
 
     Route::get('/favoris', [AnnonceController::class, 'favoris'])->name('favoris.index')->middleware('auth');
-    // Route::get('/annonce', [annoncecontroller::class, 'index'])->name('annonce');
 
     Route::get('/annonce/touriste', [AnnonceController::class, 'search'])->name('annonce');
     
@@ -58,8 +58,13 @@ Route::get('/dashboard', function () {
     Route::put('/annonce/{id}', [AnnonceController::class, 'update'])->name('annonce.update');
 
 
+    Route::get('/dashboard/admin', [AdminController::class, 'index'])->middleware('role')->name('admin.dashboard');
+    
 
-
+    Route::post('/reservation/{annonce}', [ReservationController::class, 'store'])->name('reservation.store');
+    
+    // Route::get('/showreservation/{annonce}', [ReservationController::class, 'show'])->name('reservation.show');
+    Route::get('/reservation/{annonce}/create', [ReservationController::class, 'create'])->name('reservation.create');
 
     }
 

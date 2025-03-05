@@ -131,9 +131,11 @@
                             </div>
                         </div>
                         <!-- Bouton Réserver -->
+                        <form action="{{ route('reservation.create', $annonce->id) }}" method="GET" class="mt-4">
                         <button class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
                             Réserver
                         </button>
+                        </form>
                     </div>
                 </div> 
                 @endforeach
@@ -145,10 +147,7 @@
         </div>
         </div>
         
-        <!-- Pagination -->
-        {{-- <div class="mt-10 flex justify-center">
-            {{ $annonces->links() }}
-        </div> --}}
+       
 
         <div class="flex justify-center space-x-2">
             @if ($annonces->onFirstPage())

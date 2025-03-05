@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Annonce;
 use App\Models\Equipement;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,22 @@ class AnnonceController extends Controller
         if ($request->filled('disponibilite')) {
             $annoncesQuery->where('disponibilite', '>=', $request->disponibilite);
         }
-
+        if ($request->filled('date_debut') && $request->filled('date_fin')) {
+            $dateDebut = $request->date_debut;
+            $dateFin = $request->date_fin;
+    
+            
+            // $annoncesQuery->whereDoesntHave('reservations', function($query) use ($dateDebut, $dateFin) {
+            //     $query->where(function($subQuery) use ($dateDebut, $dateFin) {
+            //         $subQuery->whereBetween('datedebut', [$dateDebut, $dateFin])
+            //                  ->orWhereBetween('datefin', [$dateDebut, $dateFin])
+            //                  ->orWhere(function($subQuery2) use ($dateDebut, $dateFin) {
+            //                      $subQuery2->where('datedebut', '<=', $dateDebut)
+            //                                ->where('datefin', '>=', $dateFin);
+            //                  });
+            //     });
+            // });
+        }
         $annonces = $annoncesQuery->paginate(9);
         $equipement= Equipement::all();
 
@@ -201,5 +217,42 @@ public function toggleFavorite(Request $request, $id)
         return view('touriste.favoris', compact('annonces'));
     }
     
+
+    //  public function search(Request $request)
+    // {
+    //     $annoncesQuery = Annonce::query();
+    
+       
+    //     if ($request->filled('ville')) {
+    //         $annoncesQuery->where('ville', 'like', '%' . $request->ville . '%');
+    //     }
+    //     if ($request->filled('disponibilite')) {
+    //                 $annoncesQuery->where('disponibilite', '>=', $request->disponibilite);
+    //             }
+    
+    //     if ($request->filled('date_debut') && $request->filled('date_fin')) {
+    //         $dateDebut = $request->date_debut;
+    //         $dateFin = $request->date_fin;
+    
+            
+    //         $annoncesQuery->whereDoesntHave('reservations', function($query) use ($dateDebut, $dateFin) {
+    //             $query->where(function($subQuery) use ($dateDebut, $dateFin) {
+    //                 $subQuery->whereBetween('datedebut', [$dateDebut, $dateFin])
+    //                          ->orWhereBetween('datefin', [$dateDebut, $dateFin])
+    //                          ->orWhere(function($subQuery2) use ($dateDebut, $dateFin) {
+    //                              $subQuery2->where('datedebut', '<=', $dateDebut)
+    //                                        ->where('datefin', '>=', $dateFin);
+    //                          });
+    //             });
+    //         });
+    //     }
+    
+    //     $annonces = $annoncesQuery->paginate(9);
+    //     $equipement = Equipement::all();
+    
+    //     return view('touriste.annonceview', compact('annonces', 'equipement'));
+    // }
+    
+
 
 }
