@@ -1,9 +1,5 @@
 <?php
-
-
-
 namespace App\Http\Controllers;
-
 use App\Models\Reservation;
 use App\Models\Annonce;
 use Illuminate\Http\Request;
@@ -34,8 +30,8 @@ class ReservationController extends Controller
         return view('touriste.showreservation', compact('annonce', 'dates_indisponibles'));
     }
 
-                public function store(Request $request, Annonce $annonce)
-                {
+    public function store(Request $request, Annonce $annonce)
+    {
                     $request->validate([
                         'date_debut' => ['required', 'date', 'after:'.$annonce->disponibilite],
                         'date_fin'   => ['required', 'date', 'after:date_debut'],
@@ -56,7 +52,7 @@ class ReservationController extends Controller
                         return redirect()->back()->with('error', 'Les dates que vous avez sélectionnées sont déjà réservées.');
                     }
                 
-                    Reservation::create([
+                    $reservation = Reservation::create([
                         'touriste_id' => Auth::id(),
                         'annonce_id'  => $annonce->id,
                         'datedebut'   => $request->date_debut,
@@ -64,7 +60,10 @@ class ReservationController extends Controller
                         'status'      => 'en attente',
                     ]);
                 
-                    return redirect()->route('annonce')->with('success', 'Réservation effectuée avec succès!');
+                    return redirect()->route('paiement', ['reservationId' => $reservation->id])->with('success', 'Réservation effectuée avec succès!');
+
                 }
+
+
             }
             

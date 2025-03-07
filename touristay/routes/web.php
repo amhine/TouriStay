@@ -7,6 +7,10 @@ use App\Http\Controllers\TouristeDashboardController;
 use App\Http\Controllers\ProprietaireDashboardController;
 use App\Http\Controllers\annoncecontroller;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\paypalController;
+use App\Models\paiement;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,6 +69,21 @@ Route::get('/dashboard', function () {
     
     // Route::get('/showreservation/{annonce}', [ReservationController::class, 'show'])->name('reservation.show');
     Route::get('/reservation/{annonce}/create', [ReservationController::class, 'create'])->name('reservation.create');
+    
+    Route::get('/paiement/{reservationId}', [PaiementController::class, 'paiement'])->name('paiement');
+
+    Route::get('/paiement/confirmation/{reservationId}', [PaiementController::class, 'Confirmation'])->name('paiement.confirmation');
+
+    Route::post('/paiement/process', [PaiementController::class, 'processPaiement'])->name('paiement.process');
+
+    
+// Route::post('pay/{reservationId}',[paypalController::class,'pay'])->name('payment');
+// Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
+// Route::get('paypal/error', [PaypalController::class, 'error'])->name('paypal.error');
+
+Route::post('pay/{reservationId}', [paypalController::class, 'pay'])->name('payment');// Exemple de route avec le paramètre reservationId
+Route::get('paypal/success/{reservationId}', [PaypalController::class, 'success'])->name('paypal.success');
+Route::get('paypal/error/{reservationId}', [PaypalController::class, 'error'])->name('paypal.error');
 
     }
 

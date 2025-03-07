@@ -13,7 +13,7 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Réserver l'annonce #{{ $annonce->id }}</h2>
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Réserver l'annonce </h2>
     
     <!-- Détails de l'annonce -->
     <div class="card bg-white rounded-xl overflow-hidden shadow-lg">
@@ -78,9 +78,11 @@
                placeholder="Sélectionnez une date">
       </div>
   
-      <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
-        Réserver
-      </button>
+      <form action="{{ route('paiement', $annonce->id) }}" method="GET" class="mt-4">
+        <button class="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-2 rounded-lg font-medium hover:opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+            Réserver
+        </button>
+        </form>
     </form>
   
     <a href="{{ route('annonce') }}" class="block text-center text-gray-600 mt-4 hover:underline">Retour aux annonces</a>
