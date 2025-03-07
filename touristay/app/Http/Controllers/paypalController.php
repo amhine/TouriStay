@@ -112,17 +112,20 @@ class paypalController extends Controller
                     session()->flash('error', 'Reservation ID is missing in session.');
                     return to_route('annonce.err');
                 }
-                
                 $payment = new paiement();
                 $payment->reservation_id = $reservationId; 
                 $payment->datepaiement = now(); 
                 $payment->id_touriste = auth()->id();
-                $payment->status = $arr['state'];
                 $payment->amount = $arr['transactions'][0]['amount']['total'];
+                $status = $arr['state'] ; 
+                if ($status === 'approved' ) {
+                    $status = 'paye';
+                }
                 
-                $payment->save();
-                
-                // Met à jour le statut de la réservation
+                $payment->status = $status; 
+                $payment->save(); 
+
+
                 $reservation = Reservation::find($reservationId);
                 if ($reservation) {
                     $reservation->status = 'payé';
