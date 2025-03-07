@@ -161,15 +161,15 @@ use Symfony\Component\Mailer\Test\Constraint\EmailCount;
 
 class paypalController extends Controller
 {
+    //
     private $gateway;
-    
     public function __construct()
     {
         $this->gateway = Omnipay::create(RestGateway::class);
         $this->gateway->initialize([
-            'clientId'  => env('PAYPAL_CLIENT_ID'),
-            'secret'    => env('PAYPAL_CLIENT_SECRET'),
-            'testMode'  => true, 
+            'clientId'  => 'AfjsJwTjeUizR7aq30pI5uH1kVoh4lD2q2pKdF82truEj57hR6wWap3gQ9_rcGmPLYPNeCnb2Tpfds7l',
+            'secret'    => 'EEgN5dVRhpehCR_CmPlzHe5HPNpqXK6J6b76wxVc_Zx8t0UbMW2eQDBt5d_Z1jJzKFnQ-JleeZOc3HBh',
+            'testMode'  => true,
         ]);
     }
     
@@ -191,7 +191,8 @@ class paypalController extends Controller
                 'returnUrl' => route('paypal.success', ['reservationId' => $reservationId]),
                 'cancelUrl' => route('paypal.error', ['reservationId' => $reservationId]),
             ])->send();
-    
+
+            // dd($response->getData());
             if ($response->isRedirect()) {
                 $data = $response->getData();
                 if (isset($data['links']) && is_array($data['links'])) {
