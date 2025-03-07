@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html>
 <head>
     <title>Confirmation de votre réservation</title>
@@ -25,4 +25,4 @@
     
     <p>L'équipe Touristay</p>
 </body>
-</html>
+</html> --}}
