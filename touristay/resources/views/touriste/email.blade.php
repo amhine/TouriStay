@@ -115,10 +115,7 @@
             <p>Si vous avez des questions concernant votre paiement, notre équipe d'assistance est à votre disposition.</p>
         </div>
 
-        <!-- Pied de page -->
-        <div class="footer">
-            <p>Cordialement,<br>L'équipe <?php echo htmlspecialchars($appName, ENT_QUOTES, 'UTF-8'); ?></p>
-        </div>
+     
     </div>
 </body>
 
