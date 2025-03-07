@@ -74,7 +74,7 @@ Route::get('/dashboard', function () {
     Route::get('/paiement/confirmation/{reservationId}', [PaiementController::class, 'Confirmation'])->name('paiement.confirmation');
 
     Route::post('/paiement/process', [PaiementController::class, 'processPaiement'])->name('paiement.process');
-
+Route::delete('/admin/annonces/{id}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('annonce.destroy');
     
 
     Route::get('/paiement/{reservationId}', [PaiementController::class, 'paiement'])->name('paiement');
@@ -82,7 +82,12 @@ Route::post('pay/{reservationId}', [paypalController::class, 'pay'])->name('paym
 Route::get('paypal/success/{reservationId}', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/error/{reservationId}', [PaypalController::class, 'error'])->name('paypal.error');
 
-    }
+// Route for showing reservation details
+Route::get('/admin/reservations/{id}', [AdminController::class, 'showReservation'])->name('reservation.show');
+
+// Route for deleting reservations
+Route::delete('/admin/reservations/{id}', [AdminController::class, 'destroyReservation'])->name('reservation.destroy');
+}
 
 );
 

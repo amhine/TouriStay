@@ -1,3 +1,4 @@
+<!-- resources/views/dashbordadmin.blade.php -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -46,53 +47,40 @@
     <div class="ml-64 p-6 w-full">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-2xl font-bold">Tableau de bord</h1>
-        <div class="text-gray-600">Lundi, 3 Mars 2025</div>
+        <div class="text-gray-600">{{ date('l, j F Y') }}</div>
       </div>
       
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-5">
           <div class="text-gray-500 text-sm">Annonces actives</div>
-          <div class="text-3xl font-bold my-2">245</div>
+          <div class="text-3xl font-bold my-2">{{ $annonces->where('disponibilite', true)->count() }}</div>
           <div class="text-green-500 text-sm">+15% vs mois dernier</div>
         </div>
         <div class="bg-white rounded-lg shadow p-5">
           <div class="text-gray-500 text-sm">Réservations</div>
-          <div class="text-3xl font-bold my-2">189</div>
+          <div class="text-3xl font-bold my-2">{{ $reservations->count() }}</div>
           <div class="text-green-500 text-sm">+8% vs mois dernier</div>
         </div>
         <div class="bg-white rounded-lg shadow p-5">
           <div class="text-gray-500 text-sm">Revenus (€)</div>
-          <div class="text-3xl font-bold my-2">24 580</div>
+          <div class="text-3xl font-bold my-2">
+            @php
+              $totalRevenu = 0;
+              foreach($reservations as $reservation) {
+                if(isset($reservation->prix_total)) {
+                  $totalRevenu += $reservation->prix_total;
+                }
+              }
+              echo number_format($totalRevenu, 0, ',', ' ');
+            @endphp
+          </div>
           <div class="text-green-500 text-sm">+12% vs mois dernier</div>
         </div>
         <div class="bg-white rounded-lg shadow p-5">
           <div class="text-gray-500 text-sm">Taux de conversion</div>
           <div class="text-3xl font-bold my-2">5.7%</div>
           <div class="text-green-500 text-sm">+0.5% vs mois dernier</div>
-        </div>
-      </div>
-      
-      <!-- Charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow p-5 lg:col-span-2">
-          <div class="flex justify-between items-center mb-5">
-            <div class="font-semibold">Revenus mensuels</div>
-            <select class="border rounded-md p-1 text-sm">
-              <option>Cette année</option>
-              <option>Année dernière</option>
-              <option>Derniers 6 mois</option>
-            </select>
-          </div>
-          <div class="bg-gray-100 h-64 rounded flex items-center justify-center">
-            [Graphique de revenus mensuels]
-          </div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-5">
-          <div class="font-semibold mb-5">Répartition des annonces</div>
-          <div class="bg-gray-100 h-64 rounded flex items-center justify-center">
-            [Graphique circulaire]
-          </div>
         </div>
       </div>
       
@@ -117,62 +105,30 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
+              @foreach($annonces->sortByDesc('created_at')->take(10) as $annonce)
               <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#12345</td>
-                <td class="px-6 py-4 whitespace-nowrap">Appartement T3 Centre-Ville</td>
-                <td class="px-6 py-4 whitespace-nowrap">01/03/2025</td>
+                <td class="px-6 py-4 whitespace-nowrap">#{{ $annonce->id }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ $annonce->titre }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ date('d/m/Y', strtotime($annonce->created_at)) }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                  @if($annonce->disponibilite)
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                  @else
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Désactivée</span>
+                  @endif
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div class="flex space-x-2">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Modifier</button>
-                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Supprimer</button>
+                    <a href="{{ route('annonce.edit', $annonce->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Modifier</a>
+                    <form action="{{ route('annonce.destroy', $annonce->id) }}" method="POST" class="inline">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce?')">Supprimer</button>
+                    </form>
                   </div>
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#12344</td>
-                <td class="px-6 py-4 whitespace-nowrap">Studio Meublé Quartier Étudiant</td>
-                <td class="px-6 py-4 whitespace-nowrap">28/02/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex space-x-2">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Modifier</button>
-                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Supprimer</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#12343</td>
-                <td class="px-6 py-4 whitespace-nowrap">Maison 4 Chambres avec Jardin</td>
-                <td class="px-6 py-4 whitespace-nowrap">25/02/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex space-x-2">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Modifier</button>
-                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Supprimer</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#12342</td>
-                <td class="px-6 py-4 whitespace-nowrap">Villa de Luxe Vue Mer</td>
-                <td class="px-6 py-4 whitespace-nowrap">22/02/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Désactivée</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex space-x-2">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Modifier</button>
-                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Supprimer</button>
-                  </div>
-                </td>
-              </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
@@ -187,57 +143,62 @@
         </div>
       </div>
       
-      <!-- Transactions Table -->
-      <div class="bg-white rounded-lg shadow p-5">
-        <div class="font-semibold mb-5">Dernières transactions</div>
+      <!-- Réservations Table -->
+      <div class="bg-white rounded-lg shadow p-5 mb-8">
+        <div class="flex justify-between items-center mb-5">
+          <div class="font-semibold">Dernières réservations</div>
+          <div class="flex space-x-2">
+            <input type="text" placeholder="Rechercher..." class="border rounded-md p-2 text-sm">
+          </div>
+        </div>
         <div class="overflow-x-auto">
           <table class="min-w-full">
             <thead>
               <tr class="bg-gray-50">
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Annonce</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date début</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date fin</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
+              @foreach($reservations->sortByDesc('created_at')->take(10) as $reservation)
               <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#85214</td>
-                <td class="px-6 py-4 whitespace-nowrap">Jean Dupont</td>
-                <td class="px-6 py-4 whitespace-nowrap">03/03/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">€850.00</td>
+                <td class="px-6 py-4 whitespace-nowrap">#{{ $reservation->id }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Payé</span>
+                  @if(isset($reservation->annonce))
+                    {{ $reservation->annonce->titre }}
+                  @else
+                    Annonce non disponible
+                  @endif
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ date('d/m/Y', strtotime($reservation->dateDebut)) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ date('d/m/Y', strtotime($reservation->dateFin)) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  @if($reservation->status === 'payé')
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Payée</span>
+                  @elseif($reservation->status === 'en attente')
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
+                  @elseif($reservation->status === 'annulée')
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Annulée</span>
+                  @else
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ $reservation->status }}</span>
+                  @endif
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <div class="flex space-x-2">
+                    <a href="{{ route('reservation.show', $reservation->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-xs transition-colors">Détails</a>
+                    <form action="{{ route('reservation.destroy', $reservation->id) }}" method="POST" class="inline">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation?')">Annuler</button>
+                    </form>
+                  </div>
                 </td>
               </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#85213</td>
-                <td class="px-6 py-4 whitespace-nowrap">Marie Martin</td>
-                <td class="px-6 py-4 whitespace-nowrap">02/03/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">€1,250.00</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#85212</td>
-                <td class="px-6 py-4 whitespace-nowrap">Pierre Leclerc</td>
-                <td class="px-6 py-4 whitespace-nowrap">01/03/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">€950.00</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Payé</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">#85211</td>
-                <td class="px-6 py-4 whitespace-nowrap">Sophie Bernard</td>
-                <td class="px-6 py-4 whitespace-nowrap">28/02/2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">€750.00</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Échoué</span>
-                </td>
-              </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
@@ -251,6 +212,7 @@
           </nav>
         </div>
       </div>
+      
     </div>
   </div>
 </body>
