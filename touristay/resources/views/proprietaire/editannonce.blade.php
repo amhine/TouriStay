@@ -67,10 +67,24 @@
         <!-- Disponibilité -->
         <div class="mb-4">
             <label for="disponibilite" class="block text-sm font-medium text-gray-700">Disponibilité</label>
-            <input type="date" name="disponibilite" id="disponibilite" 
-                   value="{{ old('disponibilite', $annonce->disponibilite) }}" 
-                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200">
+        
+            @if($dateFinMax)
+                <!-- Affichage de la date de fin maximale des réservations -->
+               
+        
+                <input type="date" name="disponibilite" id="disponibilite"
+                       value="{{ old('disponibilite', \Carbon\Carbon::parse($dateFinMax)->addDay()->format('Y-m-d')) }}"
+                       min="{{ \Carbon\Carbon::parse($dateFinMax)->addDay()->format('Y-m-d') }}"
+                       class="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200">
+        
+            @else
+                <!-- Si aucune réservation, permettre de choisir n'importe quelle date -->
+                <input type="date" name="disponibilite" id="disponibilite"
+                       value="{{ old('disponibilite', $annonce->disponibilite) }}"
+                       class="w-full border border-gray-300 p-3 rounded-lg focus:ring focus:ring-blue-200">
+            @endif
         </div>
+        
 
         <!-- Équipements -->
         <div class="mb-6">

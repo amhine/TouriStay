@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AnnonceController extends Controller
 {
-    /**
-     * Recherche d'annonces avec filtres (ville et disponibilité)
-     */
+   
     public function search(Request $request)
     {
         $annoncesQuery = Annonce::query();
@@ -26,9 +24,9 @@ class AnnonceController extends Controller
         if ($request->filled('disponibilite')) {
             $annoncesQuery->where('disponibilite', '>=', $request->disponibilite);
         }
-        if ($request->filled('date_debut') && $request->filled('date_fin')) {
-            $dateDebut = $request->date_debut;
-            $dateFin = $request->date_fin;
+        if ($request->filled('datedebut') && $request->filled('datefin')) {
+            $dateDebut = $request->datedebut;
+            $dateFin = $request->datefin;
     
             
             // $annoncesQuery->whereDoesntHave('reservations', function($query) use ($dateDebut, $dateFin) {
@@ -48,9 +46,7 @@ class AnnonceController extends Controller
         return view('touriste.annonceview', compact('annonces', 'equipement'));
     }
 
-    /**
-     * Affiche les annonces du propriétaire connecté
-     */
+    
     
     public function index()
     {
@@ -60,20 +56,14 @@ class AnnonceController extends Controller
         return view('proprietaire.annonceview', compact('annonces'));
     }
 
-
-    /**
-     * Affiche le formulaire de création d'une annonce
-     */
-    public function afficherForm()
+  public function afficherForm()
     {
         $equipement = Equipement::all(); 
         
         return view('proprietaire.form', compact('equipement'));
     }
 
-    /**
-     * Enregistre une nouvelle annonce
-     */
+   
     public function store(Request $request)
     {
         if (!Auth::check()) {
@@ -113,68 +103,120 @@ class AnnonceController extends Controller
 
         return redirect()->route('annonce.proprietaire')->with('success', 'Annonce ajoutée avec succès.');
     }
-
-    /**
-     * Affiche le formulaire de modification d'une annonce
-     */
-    public function edit($id)
-    {
-        $userId = Auth::id();
-        
-        $annonce = Annonce::where('id_proprietaire', $userId)->where('id', $id)->with('equipement') ->first(); 
-        
-        if (!$annonce) {
-            return redirect()->route('annonce.proprietaire')->with('error', 'Annonce introuvable.');
-        }
-    
-        $equipement = Equipement::all();
-    
-        $equipementsSelectionnes = $annonce->equipement ? $annonce->equipement->pluck('id')->toArray() : [];
-    
-        return view('proprietaire.editannonce', compact('annonce', 'equipement', 'equipementsSelectionnes'));
-    }
-    
-    
-    
-
-    /**
-     * Met à jour une annonce existante
-     */
     public function update(Request $request, $id)
     {
+        $request->validate([
+                    'titre' => 'required|string|max:255',
+                    'description' => 'required|string',
+                    'prixparnuit' => 'required|numeric|min:0',
+                    'nbrchambre' => 'required|integer|min:0',
+                    'nbrsallesebain' => 'required|integer|min:0',
+                    'adress' => 'required|string|max:255',
+                    'ville' => 'required|string|max:255',
+                    'disponibilite' => 'required|date',
+                    'equipement' => 'array',
+                ]);
+    
         $annonce = Annonce::findOrFail($id);
 
-        $request->validate([
-            'titre' => 'required|string|max:255',
-            'description' => 'required|string',
-            'prixparnuit' => 'required|numeric|min:0',
-            'nbrchambre' => 'required|integer|min:0',
-            'nbrsallesebain' => 'required|integer|min:0',
-            'adress' => 'required|string|max:255',
-            'ville' => 'required|string|max:255',
-            'disponibilite' => 'required|date',
-            'equipement' => 'array',
-        ]);
-
+        $dateModifiee = $request->input('disponibilite');
+    
+        $reservationsExistantes = Reservation::where('annonce_id', $annonce->id)->where(function($query) use ($dateModifiee) {
+            $query->where('datedebut', '<=', $dateModifiee)->where('datefin', '>=', $dateModifiee);
+        })->exists();
+    
+        if ($reservationsExistantes) {
+            return redirect()->back()->withErrors(['disponibilite' => 'La date de disponibilité ne peut pas être modifiée car elle chevauche une réservation existante.']);
+        }
         $annonce->update([
-            'titre' => $request->titre,
-            'prixparnuit' => $request->prixparnuit,
-            'description' => $request->description,
-            'nbrchambre' => $request->nbrchambre,
-            'nbrsallesebain' => $request->nbrsallesebain,
-            'adress' => $request->adress,
-            'ville' => $request->ville,
-            'disponibilite' => $request->disponibilite,
+            'titre' => $request->input('titre'),
+            'prixparnuit' => $request->input('prixparnuit'),
+            'description' => $request->input('description'),
+            'adress' => $request->input('adress'),
+            'ville' => $request->input('ville'),
+            'nbrchambre' => $request->input('nbrchambre'),
+            'nbrsallesebain' => $request->input('nbrsallesebain'),
+            'disponibilite' => $dateModifiee, 
         ]);
-
-        $annonce->equipement()->sync($request->equipement ?? []);
-
+        $annonce->equipement()->sync($request->input('equipement', []));
+    
         return redirect()->route('annonce.proprietaire')->with('success', 'Annonce mise à jour avec succès.');
     }
+    
+    
+    // public function edit($id)
+    // {
+    //     $userId = Auth::id();
+        
+    //     $annonce = Annonce::where('id_proprietaire', $userId)->where('id', $id)->with('equipement') ->first(); 
+        
+    //     if (!$annonce) {
+    //         return redirect()->route('annonce.proprietaire')->with('error', 'Annonce introuvable.');
+    //     }
+    
+    //     $equipement = Equipement::all();
+    
+    //     $equipementsSelectionnes = $annonce->equipement ? $annonce->equipement->pluck('id')->toArray() : [];
+    
+    //     return view('proprietaire.editannonce', compact('annonce', 'equipement', 'equipementsSelectionnes'));
+    // }
+    
+    
+    public function edit($id)
+{
+    $userId = Auth::id();
+    $annonce = Annonce::where('id_proprietaire', $userId)->where('id', $id)->with('equipement')->first(); 
+    
+    if (!$annonce) {
+        return redirect()->route('annonce.proprietaire')->with('error', 'Annonce introuvable.');
+    }
+    
+    $equipement = Equipement::all();
+    $equipementsSelectionnes = $annonce->equipement ? $annonce->equipement->pluck('id')->toArray() : [];
+    $reservations = Reservation::where('annonce_id', $annonce->id)->get();
+    if ($reservations->isNotEmpty()) {
+        $dateFinMax = $reservations->max('datefin');
+    } else {
+        $dateFinMax = null;
+    }
+    return view('proprietaire.editannonce', compact('annonce', 'equipement', 'equipementsSelectionnes', 'dateFinMax'));
+}
 
-    /**
-     * Supprime une annonce
-     */
+
+    
+    // public function update(Request $request, $id)
+    // {
+    //     $annonce = Annonce::findOrFail($id);
+
+    //     $request->validate([
+    //         'titre' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'prixparnuit' => 'required|numeric|min:0',
+    //         'nbrchambre' => 'required|integer|min:0',
+    //         'nbrsallesebain' => 'required|integer|min:0',
+    //         'adress' => 'required|string|max:255',
+    //         'ville' => 'required|string|max:255',
+    //         'disponibilite' => 'required|date',
+    //         'equipement' => 'array',
+    //     ]);
+
+    //     $annonce->update([
+    //         'titre' => $request->titre,
+    //         'prixparnuit' => $request->prixparnuit,
+    //         'description' => $request->description,
+    //         'nbrchambre' => $request->nbrchambre,
+    //         'nbrsallesebain' => $request->nbrsallesebain,
+    //         'adress' => $request->adress,
+    //         'ville' => $request->ville,
+    //         'disponibilite' => $request->disponibilite,
+    //     ]);
+
+    //     $annonce->equipement()->sync($request->equipement ?? []);
+
+    //     return redirect()->route('annonce.proprietaire')->with('success', 'Annonce mise à jour avec succès.');
+    // }
+
+   
    public function destroy($id)
 {
     $annonce = Annonce::where('id', $id)->first();
@@ -230,9 +272,9 @@ public function toggleFavorite(Request $request, $id)
     //                 $annoncesQuery->where('disponibilite', '>=', $request->disponibilite);
     //             }
     
-    //     if ($request->filled('date_debut') && $request->filled('date_fin')) {
-    //         $dateDebut = $request->date_debut;
-    //         $dateFin = $request->date_fin;
+    //     if ($request->filled('datedebut') && $request->filled('datefin')) {
+    //         $dateDebut = $request->datedebut;
+    //         $dateFin = $request->datefin;
     
             
     //         $annoncesQuery->whereDoesntHave('reservations', function($query) use ($dateDebut, $dateFin) {

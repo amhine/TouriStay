@@ -124,7 +124,7 @@
                             <div class="flex justify-around">
                                 @foreach($annonce->equipement as $equip)
                                 <div class="amenity-icon text-center">
-                                    <i class="fas fa-{{ $equip->icon }} text-purple-600 text-xl mb-1"></i>
+                                    <i class="fas fa-{{ $equip->image }} text-purple-600 text-xl mb-1"></i>
                                     <p class="text-xs">{{ $equip->nom }}</p>
                                 </div>
                                 @endforeach
