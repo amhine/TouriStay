@@ -34,9 +34,9 @@ return [
 
     
     'paypal' => [
-        'client_id' => env('PAYPAL_CLIENT_ID', ''),
-        'secret' => env('PAYPAL_CLIENT_SECRET', ''),
-        'mode' => env('PAYPAL_MODE', 'sandbox'), 
+        'client_id' => env('PAYPAL_CLIENT_ID', 'default_client_id'),
+        'secret'    => env('PAYPAL_CLIENT_SECRET', 'default_secret'),
+        'test_mode' => env('PAYPAL_TEST_MODE', true),
     ],
 
 ];
